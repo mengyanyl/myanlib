@@ -26,6 +26,8 @@ class Properties
 
         bool getBool(std::string strKey);
 
+        double getDouble(std::string strKey);
+
         static Properties& getProperties();
 
         void setFileName(std::string fileName);

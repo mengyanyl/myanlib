@@ -100,6 +100,12 @@ bool Properties::getBool(std::string skey)
     else return false;
 }
 
+double Properties::getDouble(std::string skey)
+{
+    std::string value = this->getString(skey);
+    return atof(&value[0]);
+}
+
 void Properties::setFileName(std::string fileName)
 {
     this->_fileName = fileName;
