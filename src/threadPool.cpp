@@ -16,6 +16,7 @@
 
 #include "threadPool.h"
 #include "logger.h"
+#include "utils.h"
 
 class PooledThread : public Runnable
 {
@@ -103,6 +104,8 @@ void PooledThread::run()
         _pQueue->take(_pTarget);
         if ( _pTarget )
         {
+            uint32_t st = myan::utils::getTickCount();
+
             _mutex.lock();
             _idle = false;
             _mutex.unlock();
@@ -120,6 +123,9 @@ void PooledThread::run()
             _mutex.unlock();
 
             delete _pTarget;
+
+            uint32_t et = myan::utils::getTickCount();
+            Logger::getLogger().debug("[thread %s] worked time: %.2fsec", _name.c_str(), (et-st)/1000.);
         }
         else
         {
@@ -197,6 +203,7 @@ void ThreadPool::setCapacity(int n)
         _threads.push_back(pt);
         pt->start();
     }
+    _maxCapacity = (_maxCapacity < n) ? n : _maxCapacity;
 }
 
 int ThreadPool::capacity() const
@@ -324,6 +331,7 @@ void ThreadPool::joinAll()
 void ThreadPool::start(Runnable* target)
 {
     _queue.put(target);
+    Logger::getLogger().debug("[thread %s]threadpool queue size: %d", _name.c_str(), _queue.size());
 }
 
 void ThreadPool::stopAll()

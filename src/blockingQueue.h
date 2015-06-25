@@ -37,13 +37,30 @@ public:
         _queueCount=0;
     }
 
-    void setQueueCount(int count)
+    void setQueueName(std::string aqueueName)
+    {
+        _queueName = aqueueName;
+    }
+
+    void setMaxQueueCount(int count)
     {
         this->_queueCount= count;
     }
 
     virtual ~BlockingQueue<T>(void)
     {
+    }
+
+    bool empty()
+    {
+        boost::mutex::scoped_lock lock(_mutex);
+        return _queue.empty();
+    }
+
+    int size()
+    {
+        boost::mutex::scoped_lock lock(_mutex);
+        return _queue.size();
     }
 
     bool offer(T t)
@@ -127,6 +144,11 @@ public:
     {
         boost::mutex::scoped_lock scope(_mutex);
         return _queueCount;
+    }
+
+    string& getQueueName()
+    {
+        return this->_queueName;
     }
 
 private:
