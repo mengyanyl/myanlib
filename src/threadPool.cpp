@@ -104,8 +104,6 @@ void PooledThread::run()
         _pQueue->take(_pTarget);
         if ( _pTarget )
         {
-            uint32_t st = myan::utils::getTickCount();
-
             _mutex.lock();
             _idle = false;
             _mutex.unlock();
@@ -123,9 +121,6 @@ void PooledThread::run()
             _mutex.unlock();
 
             delete _pTarget;
-
-            uint32_t et = myan::utils::getTickCount();
-            Logger::getLogger().debug("[thread %s] worked time: %.2fsec", _name.c_str(), (et-st)/1000.);
         }
         else
         {
